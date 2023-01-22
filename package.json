@@ -14,6 +14,7 @@
   "devDependencies": {
     "@sveltejs/vite-plugin-svelte": "^2.0.0",
     "@tsconfig/svelte": "^3.0.0",
+    "@types/three": "^0.148.0",
     "@typescript-eslint/eslint-plugin": "^5.0.0",
     "@typescript-eslint/parser": "^5.48.2",
     "eslint": "^8.0.1",
@@ -34,5 +35,8 @@
     "vite": "^4.0.0",
     "vite-plugin-pwa": "^0.14.1",
     "workbox-window": "^6.5.4"
+  },
+  "dependencies": {
+    "three": "^0.148.0"
   }
 }
