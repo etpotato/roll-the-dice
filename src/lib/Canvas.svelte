@@ -168,8 +168,8 @@
 
   function rollOne(mesh: THREE.Mesh) {
     const angleX = (Math.floor(Math.random() * 4) * (Math.PI / 2) + Math.PI * 4) * getRandomSign()
-    const angleY = Math.floor(Math.random() * 2) * (Math.PI / 2) * getRandomSign()
-    const angleZ = Math.floor(Math.random() * 2) * (Math.PI / 2) * getRandomSign()
+    const angleY = Math.floor(Math.random() * 2 + 1) * (Math.PI / 2) * getRandomSign()
+    const angleZ = Math.floor(Math.random() * 2 + 1) * (Math.PI / 2) * getRandomSign()
     animate(mesh, angleX, angleY, angleZ, 50)
   }
 
