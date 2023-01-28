@@ -41,8 +41,9 @@
   }
 
   function initThree() {
-    camera = new THREE.PerspectiveCamera(800, window.innerWidth / window.innerHeight, 0.1, 1000)
-    camera.position.z = 800
+    const windowSize = Math.min(window.innerWidth, window.innerHeight)
+    camera = new THREE.PerspectiveCamera(1000, window.innerWidth / window.innerHeight, 0.1, 1400)
+    camera.position.z = 1000
 
     scene = new THREE.Scene()
 
@@ -56,19 +57,27 @@
       new THREE.MeshBasicMaterial({ map: loader.load('cube6.webp') }),
     ]
 
-    const geometry = new THREE.BoxGeometry(200, 200, 200)
+    const boxSize = windowSize/2;
+    const geometry = new THREE.BoxGeometry(boxSize, boxSize, boxSize)
 
     for (let i = 0; i < DICE_COUNT; i++) {
-      const newMesh = new THREE.Mesh(geometry, materialArray)
+      const newMesh = new THREE.Mesh(
+        geometry, 
+        // new THREE.MeshStandardMaterial({ color: new THREE.Color('orange').convertSRGBToLinear() })
+        materialArray
+        )
       dices.push(newMesh)
       scene.add(newMesh)
 
-      if (i === 0) {
-        newMesh.position.set(0, -180, 50)
-      } else if (i === 1) {
-        newMesh.position.set(-300, 180, 0)
-      } else if (i === 2) {
-        newMesh.position.set(300, 180, 0)
+      switch(i) {
+        case 0:
+          newMesh.position.set(0, -1 * boxSize, boxSize / 4)
+          break
+        case 1:
+          newMesh.position.set(-1.2 * boxSize, 0.8 * boxSize, 0)
+          break
+        default:
+          newMesh.position.set(1.2 * boxSize, 0.8 * boxSize, 0)
       }
     }
 
@@ -76,6 +85,12 @@
     renderer.setPixelRatio(window.devicePixelRatio)
     renderer.setSize(window.innerWidth, window.innerHeight)
     div.appendChild(renderer.domElement)
+
+    // const ambientLight = new THREE.AmbientLight()
+    // const pointLight = new THREE.PointLight()
+    // pointLight.position.set(0,0,600)
+    // scene.add(ambientLight)
+    // scene.add(pointLight)
 
     function show() {
       renderer.render(scene, camera)
