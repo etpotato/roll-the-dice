@@ -2,7 +2,7 @@
   import { onDestroy, onMount } from 'svelte'
   import * as THREE from 'three'
   import { EDiceType } from '../types'
-  import { getBoxGeometry, getMaterial, getRandomSign } from '../utils'
+  import { getRandomSign, getRoundedBox } from '../utils'
 
   const dice: Record<EDiceType, THREE.Mesh | undefined> = {
     [EDiceType.Attack]: undefined,
@@ -57,15 +57,15 @@
 
     const boxSize = windowSize/2;
 
-    dice[EDiceType.Attack] = new THREE.Mesh(getBoxGeometry(boxSize), getMaterial(EDiceType.Attack))
+    dice[EDiceType.Attack] = getRoundedBox(EDiceType.Attack, boxSize)
     scene.add(dice[EDiceType.Attack])
     dice[EDiceType.Attack].position.set(0, -1 * boxSize, boxSize / 4)
 
-    dice[EDiceType.Damage] = new THREE.Mesh(getBoxGeometry(boxSize), getMaterial(EDiceType.Damage))
+    dice[EDiceType.Damage] = getRoundedBox(EDiceType.Damage, boxSize)
     scene.add(dice[EDiceType.Damage])
     dice[EDiceType.Damage].position.set(-1.2 * boxSize, 0.8 * boxSize, 0)
 
-    dice[EDiceType.Protection] = new THREE.Mesh(getBoxGeometry(boxSize), getMaterial(EDiceType.Protection))
+    dice[EDiceType.Protection] = getRoundedBox(EDiceType.Protection, boxSize)
     scene.add(dice[EDiceType.Protection])
     dice[EDiceType.Protection].position.set(1.2 * boxSize, 0.8 * boxSize, 0)
 
