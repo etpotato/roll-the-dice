@@ -13,5 +13,5 @@ body {
   background-position: center;
   background-image: 
     radial-gradient(rgba(0, 0, 0, 0.2), rgba(0, 0, 0, 0.4) 50%, rgba(0, 0, 0, 1)),
-    url('dice-bg.jpg');
+    url('board-bg.jpg');
 }

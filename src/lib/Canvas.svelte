@@ -1,17 +1,21 @@
 <script lang="ts">
   import { onDestroy, onMount } from 'svelte'
   import * as THREE from 'three'
-  import { getRandomSign } from '../utils'
+  import { EDiceType } from '../types'
+  import { getBoxGeometry, getMaterial, getRandomSign } from '../utils'
 
-  const DICE_COUNT = 3
-
+  const dice: Record<EDiceType, THREE.Mesh | undefined> = {
+    [EDiceType.Attack]: undefined,
+    [EDiceType.Damage]: undefined,
+    [EDiceType.Protection]: undefined,
+  }
   let camera: THREE.PerspectiveCamera
   let scene: THREE.Scene
   let renderer: THREE.WebGLRenderer
   let div: HTMLDivElement
   let isRolling = false
-  let dices: THREE.Mesh[] = []
-  let index = 0
+  let state = false
+  let isDamageActive = true
   let width = 0
   let height = 0
 
@@ -25,34 +29,21 @@
 
   function disposeThree() {
     console.log('onDestroy')
-    dices.forEach((dice) => {
-      dice.geometry.dispose()
+    Object.values(dice).forEach((dice) => {
+      dice?.geometry.dispose()
 
       if (Array.isArray(dice.material)) {
         dice.material.forEach((item) => item.dispose())
       } else {
-        dice.material.dispose()
+        dice?.material.dispose()
       }
     })
     camera = null
     scene = null
     renderer = null
-    dices = []
 
     window.removeEventListener('click', handleClick)
     window.removeEventListener('resize', handleWindowResize)
-  }
-
-  function getMaterial() {
-    const loader = new THREE.TextureLoader()
-    return [
-      new THREE.MeshBasicMaterial({ map: loader.load('cube1.webp'), transparent: true }),
-      new THREE.MeshBasicMaterial({ map: loader.load('cube2.webp'), transparent: true }),
-      new THREE.MeshBasicMaterial({ map: loader.load('cube3.webp'), transparent: true }),
-      new THREE.MeshBasicMaterial({ map: loader.load('cube4.webp'), transparent: true }),
-      new THREE.MeshBasicMaterial({ map: loader.load('cube5.webp'), transparent: true }),
-      new THREE.MeshBasicMaterial({ map: loader.load('cube6.webp'), transparent: true }),
-    ]
   }
 
   function initThree() {
@@ -65,27 +56,18 @@
     scene = new THREE.Scene()
 
     const boxSize = windowSize/2;
-    const geometry = new THREE.BoxGeometry(boxSize, boxSize, boxSize)
 
-    for (let i = 0; i < DICE_COUNT; i++) {
-      const newMesh = new THREE.Mesh(
-        geometry, 
-        getMaterial()
-        )
-      dices.push(newMesh)
-      scene.add(newMesh)
+    dice[EDiceType.Attack] = new THREE.Mesh(getBoxGeometry(boxSize), getMaterial(EDiceType.Attack))
+    scene.add(dice[EDiceType.Attack])
+    dice[EDiceType.Attack].position.set(0, -1 * boxSize, boxSize / 4)
 
-      switch(i) {
-        case 0:
-          newMesh.position.set(0, -1 * boxSize, boxSize / 4)
-          break
-        case 1:
-          newMesh.position.set(-1.2 * boxSize, 0.8 * boxSize, 0)
-          break
-        default:
-          newMesh.position.set(1.2 * boxSize, 0.8 * boxSize, 0)
-      }
-    }
+    dice[EDiceType.Damage] = new THREE.Mesh(getBoxGeometry(boxSize), getMaterial(EDiceType.Damage))
+    scene.add(dice[EDiceType.Damage])
+    dice[EDiceType.Damage].position.set(-1.2 * boxSize, 0.8 * boxSize, 0)
+
+    dice[EDiceType.Protection] = new THREE.Mesh(getBoxGeometry(boxSize), getMaterial(EDiceType.Protection))
+    scene.add(dice[EDiceType.Protection])
+    dice[EDiceType.Protection].position.set(1.2 * boxSize, 0.8 * boxSize, 0)
 
     renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true })
     renderer.setPixelRatio(window.devicePixelRatio)
@@ -108,25 +90,25 @@
 
   function handleClick(evt: MouseEvent) {
     const OPACITY = 0.3
-
     const mouse = new THREE.Vector2()
     const raycaster = new THREE.Raycaster()
     mouse.set((evt.clientX / width) * 2 - 1, -(evt.clientY / height) * 2 + 1)
     raycaster.setFromCamera(mouse, camera)
     const intersects = raycaster.intersectObjects(scene.children, true)
 
-    if (!intersects.length) {
+    if (!intersects.length || intersects[0].object !== dice[EDiceType.Damage]) {
       return roll()
     }
 
-    intersects.forEach((target) => {
-      const { material } = target.object as THREE.Mesh
-      if (Array.isArray(material)) {
-        material.forEach((item) => {
-          item.opacity = item.opacity === OPACITY ? 1 : OPACITY
-        }) 
-      }
-    })
+    const {material} = intersects[0].object as THREE.Mesh
+
+    isDamageActive = !isDamageActive
+
+    if (Array.isArray(material)) {
+      material.forEach((item) => {
+        item.opacity = isDamageActive ? 1 : OPACITY
+      }) 
+    }
   }
 
   function handleWindowResize() {
@@ -174,14 +156,16 @@
   }
 
   function roll() {
-    if (!isRolling) {
-      for (let i = 0; i < dices.length; i++) {
-        if (index === i || (index + 1) % dices.length === i) {
-          rollOne(dices[i])
-        }
-      }
-      index = (index + 1) % dices.length
+    if (isRolling) return
+
+    if (state) {
+      rollOne(dice[EDiceType.Attack])
+      isDamageActive && rollOne(dice[EDiceType.Damage])
+    } else {
+      rollOne(dice[EDiceType.Protection])
     }
+
+    state = !state
   }
 </script>
 
