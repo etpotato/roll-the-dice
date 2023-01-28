@@ -7,3 +7,9 @@
   <Canvas />
   <ReloadPrompt />  
 </main>
+
+<style>
+  main {
+    position: relative;
+  }
+</style>
