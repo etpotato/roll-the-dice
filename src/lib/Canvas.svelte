@@ -12,6 +12,8 @@
   let isRolling = false
   let dices: THREE.Mesh[] = []
   let index = 0
+  let width = 0
+  let height = 0
 
   onMount(() => {
     initThree()
@@ -37,25 +39,30 @@
     renderer = null
     dices = []
 
-    window.removeEventListener('resize', onWindowResize)
+    window.removeEventListener('click', handleClick)
+    window.removeEventListener('resize', handleWindowResize)
+  }
+
+  function getMaterial() {
+    const loader = new THREE.TextureLoader()
+    return [
+      new THREE.MeshBasicMaterial({ map: loader.load('cube1.webp'), transparent: true }),
+      new THREE.MeshBasicMaterial({ map: loader.load('cube2.webp'), transparent: true }),
+      new THREE.MeshBasicMaterial({ map: loader.load('cube3.webp'), transparent: true }),
+      new THREE.MeshBasicMaterial({ map: loader.load('cube4.webp'), transparent: true }),
+      new THREE.MeshBasicMaterial({ map: loader.load('cube5.webp'), transparent: true }),
+      new THREE.MeshBasicMaterial({ map: loader.load('cube6.webp'), transparent: true }),
+    ]
   }
 
   function initThree() {
-    const windowSize = Math.min(window.innerWidth, window.innerHeight)
-    camera = new THREE.PerspectiveCamera(1000, window.innerWidth / window.innerHeight, 0.1, 1400)
+    width = window.innerWidth;
+    height = window.innerHeight;
+    const windowSize = Math.min(width, height)
+    camera = new THREE.PerspectiveCamera(1000, width / height, 0.1, 1400)
     camera.position.z = 1000
 
     scene = new THREE.Scene()
-
-    const loader = new THREE.TextureLoader()
-    const materialArray = [
-      new THREE.MeshBasicMaterial({ map: loader.load('cube1.webp') }),
-      new THREE.MeshBasicMaterial({ map: loader.load('cube2.webp') }),
-      new THREE.MeshBasicMaterial({ map: loader.load('cube3.webp') }),
-      new THREE.MeshBasicMaterial({ map: loader.load('cube4.webp') }),
-      new THREE.MeshBasicMaterial({ map: loader.load('cube5.webp') }),
-      new THREE.MeshBasicMaterial({ map: loader.load('cube6.webp') }),
-    ]
 
     const boxSize = windowSize/2;
     const geometry = new THREE.BoxGeometry(boxSize, boxSize, boxSize)
@@ -63,8 +70,7 @@
     for (let i = 0; i < DICE_COUNT; i++) {
       const newMesh = new THREE.Mesh(
         geometry, 
-        // new THREE.MeshStandardMaterial({ color: new THREE.Color('orange').convertSRGBToLinear() })
-        materialArray
+        getMaterial()
         )
       dices.push(newMesh)
       scene.add(newMesh)
@@ -81,16 +87,11 @@
       }
     }
 
-    renderer = new THREE.WebGLRenderer({ antialias: true })
+    renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true })
     renderer.setPixelRatio(window.devicePixelRatio)
     renderer.setSize(window.innerWidth, window.innerHeight)
+    renderer.setClearColor(0x000000, 0);
     div.appendChild(renderer.domElement)
-
-    // const ambientLight = new THREE.AmbientLight()
-    // const pointLight = new THREE.PointLight()
-    // pointLight.position.set(0,0,600)
-    // scene.add(ambientLight)
-    // scene.add(pointLight)
 
     function show() {
       renderer.render(scene, camera)
@@ -100,11 +101,35 @@
     }
 
     show()
-
-    window.addEventListener('resize', onWindowResize)
+    
+    window.addEventListener('click', handleClick)
+    window.addEventListener('resize', handleWindowResize)
   }
 
-  function onWindowResize() {
+  function handleClick(evt: MouseEvent) {
+    const OPACITY = 0.3
+
+    const mouse = new THREE.Vector2()
+    const raycaster = new THREE.Raycaster()
+    mouse.set((evt.clientX / width) * 2 - 1, -(evt.clientY / height) * 2 + 1)
+    raycaster.setFromCamera(mouse, camera)
+    const intersects = raycaster.intersectObjects(scene.children, true)
+
+    if (!intersects.length) {
+      return roll()
+    }
+
+    intersects.forEach((target) => {
+      const { material } = target.object as THREE.Mesh
+      if (Array.isArray(material)) {
+        material.forEach((item) => {
+          item.opacity = item.opacity === OPACITY ? 1 : OPACITY
+        }) 
+      }
+    })
+  }
+
+  function handleWindowResize() {
     if (!camera) return
     camera.aspect = window.innerWidth / window.innerHeight
     camera.updateProjectionMatrix()
@@ -161,4 +186,4 @@
 </script>
 
 <!-- svelte-ignore a11y-click-events-have-key-events -->
-<div bind:this={div} on:click={roll} class="canvas" />
+<div bind:this={div} class="canvas" />
