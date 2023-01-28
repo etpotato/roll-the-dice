@@ -96,8 +96,12 @@
     raycaster.setFromCamera(mouse, camera)
     const intersects = raycaster.intersectObjects(scene.children, true)
 
-    if (!intersects.length || intersects[0].object !== dice[EDiceType.Damage]) {
+    if (!intersects.length) {
       return roll()
+    }
+
+    if (intersects[0].object !== dice[EDiceType.Damage]) {
+      return
     }
 
     const {material} = intersects[0].object as THREE.Mesh
