@@ -42,7 +42,7 @@
     scene = null
     renderer = null
 
-    window.removeEventListener('click', handleClick)
+    document.removeEventListener('click', handleClick)
     window.removeEventListener('resize', handleWindowResize)
   }
 
@@ -84,7 +84,7 @@
 
     show()
     
-    window.addEventListener('click', handleClick)
+    document.addEventListener('click', handleClick)
     window.addEventListener('resize', handleWindowResize)
   }
 
