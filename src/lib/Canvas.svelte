@@ -1,6 +1,6 @@
 <script lang="ts">
   import { onDestroy, onMount } from 'svelte'
-  import * as THREE from 'three'
+  import { PerspectiveCamera, Scene, WebGLRenderer, Vector2, Raycaster } from 'three'
   import { EDiceType } from '../types'
   import { getRandomSign, getRoundedBox } from '../utils'
 
@@ -50,10 +50,10 @@
     width = window.innerWidth;
     height = window.innerHeight;
     const windowSize = Math.min(width, height)
-    camera = new THREE.PerspectiveCamera(1000, width / height, 0.1, 1400)
+    camera = new PerspectiveCamera(1000, width / height, 0.1, 1400)
     camera.position.z = 1000
 
-    scene = new THREE.Scene()
+    scene = new Scene()
 
     const boxSize = windowSize/2;
 
@@ -69,7 +69,7 @@
     scene.add(dice[EDiceType.Protection])
     dice[EDiceType.Protection].position.set(1.2 * boxSize, 0.8 * boxSize, 0)
 
-    renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true })
+    renderer = new WebGLRenderer({ antialias: true, alpha: true })
     renderer.setPixelRatio(window.devicePixelRatio)
     renderer.setSize(window.innerWidth, window.innerHeight)
     renderer.setClearColor(0x000000, 0);
@@ -90,8 +90,8 @@
 
   function handleClick(evt: MouseEvent) {
     const OPACITY = 0.3
-    const mouse = new THREE.Vector2()
-    const raycaster = new THREE.Raycaster()
+    const mouse = new Vector2()
+    const raycaster = new Raycaster()
     mouse.set((evt.clientX / width) * 2 - 1, -(evt.clientY / height) * 2 + 1)
     raycaster.setFromCamera(mouse, camera)
     const intersects = raycaster.intersectObjects(scene.children, true)
