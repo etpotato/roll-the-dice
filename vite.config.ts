@@ -16,17 +16,11 @@ export default defineConfig({
       workbox: {
         globPatterns: ['**/*.{js,css,html,ico,png,jpeg,jpg,svg}'],
       },
-      includeAssets: [
-        'favicon.ico',
-        'apple-touch-icon.png',
-        'masked-icon.svg',
-        'board-bg.png',
-        'dice/*.png',
-      ],
+      includeAssets: ['favicon.ico', 'apple-touch-icon.png', 'board-bg.png', 'dice/*.png'],
       manifest: {
-        name: 'Roll The Dice',
-        short_name: 'Dice',
-        description: 'Dice for boardgame',
+        name: 'Three Shields',
+        short_name: 'Three Shields',
+        description: 'digital dice for Three Shields game',
         theme_color: '#151208',
         background_color: '#151208',
         orientation: 'portrait',
