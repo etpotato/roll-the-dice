@@ -14,6 +14,7 @@ specifiers:
   eslint-plugin-prettier: ^4.2.1
   eslint-plugin-promise: ^6.0.0
   eslint-plugin-svelte3: ^4.0.0
+  lodash.debounce: ^4.0.8
   prettier: ^2.8.3
   prettier-eslint: ^15.0.1
   prettier-plugin-svelte: ^2.9.0
@@ -27,6 +28,7 @@ specifiers:
   workbox-window: ^6.5.4
 
 dependencies:
+  lodash.debounce: 4.0.8
   three: 0.148.0
 
 devDependencies:
@@ -3260,7 +3262,6 @@ packages:
 
   /lodash.debounce/4.0.8:
     resolution: {integrity: sha512-FT1yDzDYEoYWhnSGnpE/4Kj1fLZkDFyqRb7fNt6FdYOSxlUWAtp42Eh6Wb0rGIv/m9Bgo7x4GhQbm5Ys4SG5ow==}
-    dev: true
 
   /lodash.merge/4.6.2:
     resolution: {integrity: sha512-0KpjqXRVvrYyCsX1swR/XTK0va6VQkQM6MNo7PqW77ByjAhoARA8EfrP1N4+KlKj8YS0ZUCtRT/YUuhyYDujIQ==}

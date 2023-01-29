@@ -59,13 +59,13 @@ export function getRoundedBox(type: EDiceType, boxSize: number) {
   return box
 }
 
-// function resize(renderer) {
-//   const canvas = renderer.domElement
-//   const width = canvas.clientWidth
-//   const height = canvas.clientHeight
-//   const needResize = canvas.width !== width || canvas.height !== height
-//   if (needResize) {
-//     renderer.setSize(width, height, false)
-//   }
-//   return needResize
-// }
+export function getDicePosition(type: EDiceType, boxSize: number): [number, number, number] {
+  switch (type) {
+    case EDiceType.Attack:
+      return [0, -0.8 * boxSize, boxSize / 4]
+    case EDiceType.Damage:
+      return [-1.1 * boxSize, 0.8 * boxSize, 0]
+    default:
+      return [1.1 * boxSize, 0.8 * boxSize, 0]
+  }
+}

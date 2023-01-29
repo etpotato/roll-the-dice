@@ -1,8 +1,11 @@
 <script lang="ts">
   import { onDestroy, onMount } from 'svelte'
   import { PerspectiveCamera, Scene, WebGLRenderer, Vector2, Raycaster } from 'three'
+  import debounce from 'lodash.debounce'
   import { EDiceType } from '../types'
-  import { getRandomSign, getRoundedBox } from '../utils'
+  import { getDicePosition, getRandomSign, getRoundedBox } from '../utils'
+
+  const BOX_SIZE = 200;
 
   const dice: Record<EDiceType, THREE.Mesh | undefined> = {
     [EDiceType.Attack]: undefined,
@@ -12,7 +15,7 @@
   let camera: THREE.PerspectiveCamera
   let scene: THREE.Scene
   let renderer: THREE.WebGLRenderer
-  let div: HTMLDivElement
+  let canvas: HTMLCanvasElement
   let isRolling = false
   let state = false
   let isDamageActive = true
@@ -28,7 +31,6 @@
   })
 
   function disposeThree() {
-    console.log('onDestroy')
     Object.values(dice).forEach((dice) => {
       dice?.geometry.dispose()
 
@@ -43,37 +45,33 @@
     renderer = null
 
     document.removeEventListener('click', handleClick)
-    window.removeEventListener('resize', handleWindowResize)
+    window.removeEventListener('resize', handleWindowResizeDebounced)
   }
 
   function initThree() {
     width = window.innerWidth;
     height = window.innerHeight;
-    const windowSize = Math.min(width, height)
     camera = new PerspectiveCamera(1000, width / height, 0.1, 1400)
     camera.position.z = 1000
 
     scene = new Scene()
 
-    const boxSize = windowSize/2;
-
-    dice[EDiceType.Attack] = getRoundedBox(EDiceType.Attack, boxSize)
+    dice[EDiceType.Attack] = getRoundedBox(EDiceType.Attack, BOX_SIZE)
     scene.add(dice[EDiceType.Attack])
-    dice[EDiceType.Attack].position.set(0, -1 * boxSize, boxSize / 4)
+    dice[EDiceType.Attack].position.set(...getDicePosition(EDiceType.Attack, BOX_SIZE))
 
-    dice[EDiceType.Damage] = getRoundedBox(EDiceType.Damage, boxSize)
+    dice[EDiceType.Damage] = getRoundedBox(EDiceType.Damage, BOX_SIZE)
     scene.add(dice[EDiceType.Damage])
-    dice[EDiceType.Damage].position.set(-1.2 * boxSize, 0.8 * boxSize, 0)
+    dice[EDiceType.Damage].position.set(...getDicePosition(EDiceType.Damage, BOX_SIZE))
 
-    dice[EDiceType.Protection] = getRoundedBox(EDiceType.Protection, boxSize)
+    dice[EDiceType.Protection] = getRoundedBox(EDiceType.Protection, BOX_SIZE)
     scene.add(dice[EDiceType.Protection])
-    dice[EDiceType.Protection].position.set(1.2 * boxSize, 0.8 * boxSize, 0)
+    dice[EDiceType.Protection].position.set(...getDicePosition(EDiceType.Protection, BOX_SIZE))
 
-    renderer = new WebGLRenderer({ antialias: true, alpha: true })
+    renderer = new WebGLRenderer({ antialias: true, alpha: true, canvas })
     renderer.setPixelRatio(window.devicePixelRatio)
-    renderer.setSize(window.innerWidth, window.innerHeight)
+    renderer.setSize(width, height)
     renderer.setClearColor(0x000000, 0);
-    div.appendChild(renderer.domElement)
 
     function show() {
       renderer.render(scene, camera)
@@ -85,7 +83,7 @@
     show()
     
     document.addEventListener('click', handleClick)
-    window.addEventListener('resize', handleWindowResize)
+    window.addEventListener('resize', handleWindowResizeDebounced)
   }
 
   function handleClick(evt: MouseEvent) {
@@ -117,11 +115,14 @@
 
   function handleWindowResize() {
     if (!camera) return
-    camera.aspect = window.innerWidth / window.innerHeight
+    width = window.innerWidth
+    height = window.innerHeight
+    camera.aspect = width / height
     camera.updateProjectionMatrix()
-
-    renderer.setSize(window.innerWidth, window.innerHeight)
+    renderer.setSize(width, height)
   }
+
+  const handleWindowResizeDebounced = debounce(handleWindowResize, 500)
 
   function animate(
     mesh: THREE.Mesh,
@@ -173,5 +174,14 @@
   }
 </script>
 
-<!-- svelte-ignore a11y-click-events-have-key-events -->
-<div bind:this={div} class="canvas" />
+<div>
+  <canvas bind:this={canvas} class='canvas'></canvas>
+</div>
+
+<style>
+  .canvas {
+    display: block;
+    width: 100% !important;
+    height: 100vh !important;
+  }
+</style>
