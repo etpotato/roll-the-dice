@@ -12,44 +12,44 @@ export function getRoundedBox(type: EDiceType, boxSize: number) {
   switch (type) {
     case EDiceType.Damage:
       cubeTexture = [
-        new MeshBasicMaterial({ map: loader.load('dice/damage-arm.png'), transparent: true }),
+        new MeshBasicMaterial({ map: loader.load('dice/damage-arm.jpg'), transparent: true }),
         new MeshBasicMaterial({
-          map: loader.load('dice/damage-belly.png'),
+          map: loader.load('dice/damage-belly.jpg'),
           transparent: true,
         }),
         new MeshBasicMaterial({
-          map: loader.load('dice/damage-chest.png'),
+          map: loader.load('dice/damage-chest.jpg'),
           transparent: true,
         }),
         new MeshBasicMaterial({
-          map: loader.load('dice/damage-groin.png'),
+          map: loader.load('dice/damage-groin.jpg'),
           transparent: true,
         }),
-        new MeshBasicMaterial({ map: loader.load('dice/damage-leg.png'), transparent: true }),
+        new MeshBasicMaterial({ map: loader.load('dice/damage-leg.jpg'), transparent: true }),
         new MeshBasicMaterial({
-          map: loader.load('dice/damage-skull.png'),
+          map: loader.load('dice/damage-skull.jpg'),
           transparent: true,
         }),
       ]
       break
     case EDiceType.Attack:
       cubeTexture = [
-        new MeshBasicMaterial({ map: loader.load('dice/attack-sword.png') }),
-        new MeshBasicMaterial({ map: loader.load('dice/attack-sword.png') }),
-        new MeshBasicMaterial({ map: loader.load('dice/attack-sword.png') }),
-        new MeshBasicMaterial({ map: loader.load('dice/attack-shield.png') }),
-        new MeshBasicMaterial({ map: loader.load('dice/attack-leg.png') }),
-        new MeshBasicMaterial({ map: loader.load('dice/attack-empty.png') }),
+        new MeshBasicMaterial({ map: loader.load('dice/attack-sword.jpg') }),
+        new MeshBasicMaterial({ map: loader.load('dice/attack-sword.jpg') }),
+        new MeshBasicMaterial({ map: loader.load('dice/attack-sword.jpg') }),
+        new MeshBasicMaterial({ map: loader.load('dice/attack-shield.jpg') }),
+        new MeshBasicMaterial({ map: loader.load('dice/attack-leg.jpg') }),
+        new MeshBasicMaterial({ map: loader.load('dice/attack-empty.jpg') }),
       ]
       break
     default:
       cubeTexture = [
-        new MeshBasicMaterial({ map: loader.load('dice/protection-shield.png') }),
-        new MeshBasicMaterial({ map: loader.load('dice/protection-shield.png') }),
-        new MeshBasicMaterial({ map: loader.load('dice/protection-shield.png') }),
-        new MeshBasicMaterial({ map: loader.load('dice/protection-sword.png') }),
-        new MeshBasicMaterial({ map: loader.load('dice/protection-sword.png') }),
-        new MeshBasicMaterial({ map: loader.load('dice/protection-sword.png') }),
+        new MeshBasicMaterial({ map: loader.load('dice/protection-shield.jpg') }),
+        new MeshBasicMaterial({ map: loader.load('dice/protection-shield.jpg') }),
+        new MeshBasicMaterial({ map: loader.load('dice/protection-shield.jpg') }),
+        new MeshBasicMaterial({ map: loader.load('dice/protection-sword.jpg') }),
+        new MeshBasicMaterial({ map: loader.load('dice/protection-sword.jpg') }),
+        new MeshBasicMaterial({ map: loader.load('dice/protection-sword.jpg') }),
       ]
   }
 
