@@ -3,6 +3,7 @@
   import { PerspectiveCamera, Scene, WebGLRenderer, Vector2, Raycaster } from 'three'
   import debounce from 'lodash.debounce'
   import Menu from './Menu.svelte'
+  import Sound from './Sound.svelte'
   import { EDiceType } from '../types'
   import { getDicePosition, getRandomSign, getRoundedBox } from '../utils'
 
@@ -17,6 +18,8 @@
   let scene: THREE.Scene
   let renderer: THREE.WebGLRenderer
   let canvas: HTMLCanvasElement
+  let audio: HTMLAudioElement
+  let isMuted = false
   let isRolling = false
   let state = false
   let isDamageActive = true
@@ -137,6 +140,7 @@
     function recursive(curX: number, curY: number, curZ: number, curCount: number) {
       if (curCount === count) {
         isRolling = false
+        !isMuted && audio.play()
         return
       }
 
@@ -173,11 +177,18 @@
 
     state = !state
   }
+
+  function handleMute(evt: Event) {
+    (evt.currentTarget as HTMLButtonElement).blur()
+    isMuted = !isMuted
+  }
 </script>
 
 <div class="wrap">
+  <audio bind:this={audio} src="/kick.mp3"/> 
   <canvas bind:this={canvas} class='canvas'></canvas>
-  <Menu/>
+  <Sound {isMuted} on:click={handleMute} />
+  <Menu />
 </div>
 
 <style>

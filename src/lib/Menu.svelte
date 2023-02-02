@@ -1,4 +1,5 @@
 <script lang="ts">
+  // https://www.svgrepo.com/collection/ui-icons-with-gap/2
   import { onDestroy } from 'svelte'
 
   let modalOpen = false
@@ -25,8 +26,9 @@
     window.removeEventListener('keydown', handleEsc)
   })
 </script>
+
 <div class="menu">
-  <button on:click={handleModalOpen} class="button">
+  <button on:click={handleModalOpen} class="button" type="button">
     <svg viewBox="0 0 24 24" fill="none" class="icon">
       <path d="M4 7H12M20 7H16M4 12H20M4 17H8M20 17H12" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
     </svg>
@@ -34,7 +36,7 @@
 </div>
 {#if modalOpen}
   <div class="modal">
-    <button on:click={handleModalClose} class="button modal-close">
+    <button on:click={handleModalClose} class="button modal-close" type="button">
       <svg viewBox="0 0 24 24" fill="none" class="icon">
         <path d="M19 5L5 19M5.00001 5L9.5 9.5M19 19L12 12" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
       </svg>
