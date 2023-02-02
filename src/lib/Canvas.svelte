@@ -143,12 +143,13 @@
 
     function recursive(curX: number, curY: number, curZ: number, curCount: number) {
       if (curCount === count) {
-        if (!isMuted) {
-          audio.autoplay = true
-          audio.play()
-        }
         isRolling = false
         return
+      }
+
+      if (!isMuted && curCount > count * 0.7) {
+        audio.autoplay = true
+        audio.play()
       }
 
       isRolling = true
@@ -198,7 +199,7 @@
 </script>
 
 <div class="wrap">
-  <audio bind:this={audio} src="/kick.mp3"/> 
+  <audio bind:this={audio} src="/dice.mp3"/> 
   <canvas bind:this={canvas} class='canvas'></canvas>
   <Sound {isMuted} on:click={handleMute} />
   <Menu />
