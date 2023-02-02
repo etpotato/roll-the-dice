@@ -2,6 +2,7 @@
   import { onDestroy, onMount } from 'svelte'
   import { PerspectiveCamera, Scene, WebGLRenderer, Vector2, Raycaster } from 'three'
   import debounce from 'lodash.debounce'
+  import Menu from './Menu.svelte'
   import { EDiceType } from '../types'
   import { getDicePosition, getRandomSign, getRoundedBox } from '../utils'
 
@@ -44,7 +45,7 @@
     scene = null
     renderer = null
 
-    document.removeEventListener('click', handleClick)
+    canvas.removeEventListener('click', handleClick)
     window.removeEventListener('resize', handleWindowResizeDebounced)
   }
 
@@ -82,7 +83,7 @@
 
     show()
     
-    document.addEventListener('click', handleClick)
+    canvas.addEventListener('click', handleClick)
     window.addEventListener('resize', handleWindowResizeDebounced)
   }
 
@@ -174,11 +175,16 @@
   }
 </script>
 
-<div>
+<div class="wrap">
   <canvas bind:this={canvas} class='canvas'></canvas>
+  <Menu/>
 </div>
 
 <style>
+  .wrap {
+    position: relative;
+  }
+
   .canvas {
     display: block;
     width: 100% !important;
