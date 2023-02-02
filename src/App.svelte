@@ -5,11 +5,12 @@
 
 <main>
   <Canvas />
-  <ReloadPrompt />  
+  <ReloadPrompt />
 </main>
 
 <style>
   main {
     position: relative;
+    overflow: hidden;
   }
 </style>

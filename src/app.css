@@ -1,11 +1,16 @@
 :root {
   --theme-color: #201d15;
+  --vh: 100vh;
 }
 
 *,
 *::before,
 *::after {
   box-sizing: border-box;
+}
+
+html {
+  overflow: hidden;
 }
 
 body {

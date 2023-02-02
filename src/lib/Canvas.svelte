@@ -57,6 +57,7 @@
   function initThree() {
     width = window.innerWidth;
     height = window.innerHeight;
+    document.documentElement.style.setProperty('--vh', `${height * 0.01}px`)
     camera = new PerspectiveCamera(1000, width / height, 0.1, 1400)
     camera.position.z = 1000
 
@@ -123,6 +124,7 @@
     if (!camera) return
     width = window.innerWidth
     height = window.innerHeight
+    document.documentElement.style.setProperty('--vh', `${height * 0.01}px`)
     camera.aspect = width / height
     camera.updateProjectionMatrix()
     renderer.setSize(width, height)
@@ -207,6 +209,7 @@
   .canvas {
     display: block;
     width: 100% !important;
-    height: 100vh !important;
+    height: 100vh;
+    height: calc(var(--vh, 1vh) * 100) !important;
   }
 </style>
