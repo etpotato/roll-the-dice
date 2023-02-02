@@ -28,10 +28,12 @@
 
   onMount(() => {
     initThree()
+    window.addEventListener('keydown', handleSpace)
   })
 
   onDestroy(() => {
     disposeThree()
+    window.removeEventListener('keydown', handleSpace)
   })
 
   function disposeThree() {
@@ -139,8 +141,8 @@
 
     function recursive(curX: number, curY: number, curZ: number, curCount: number) {
       if (curCount === count) {
-        isRolling = false
         !isMuted && audio.play()
+        isRolling = false
         return
       }
 
@@ -176,6 +178,12 @@
     }
 
     state = !state
+  }
+
+  function handleSpace(evt: Event) {
+    if ([' ', 'Space'].includes(evt.key)) {
+      roll()
+    }
   }
 
   function handleMute(evt: Event) {
