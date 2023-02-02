@@ -143,7 +143,10 @@
 
     function recursive(curX: number, curY: number, curZ: number, curCount: number) {
       if (curCount === count) {
-        !isMuted && audio.play()
+        if (!isMuted) {
+          audio.autoplay = true
+          audio.play()
+        }
         isRolling = false
         return
       }
