@@ -225,6 +225,7 @@
     width: 100% !important;
     height: 100vh;
     height: calc(var(--vh, 1vh) * 100) !important;
+    transition: 0.2s opacity ease-in;
   }
 
   .canvas.hidden {
