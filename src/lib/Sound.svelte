@@ -17,10 +17,10 @@
 <style>
   .button {
     position: absolute;
-    right: 16px;
-    bottom: 16px;
+    right: 0;
+    bottom: 0;
     margin: 0;
-    padding: 0.5em;
+    padding: 2em;
     border: none;
     background-color: transparent;
     cursor: pointer;

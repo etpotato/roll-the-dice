@@ -110,8 +110,8 @@
 <style>
   .menu {
     position: absolute;
-    top: 16px;
-    right: 16px;
+    top: 0;
+    right: 0;
   }
 
   .modal {
@@ -145,14 +145,14 @@
 
   .modal-close {
     position: fixed;
-    top: 16px;
-    right: 16px;
+    top: 0;
+    right: 0;
     cursor: pointer;
   }
 
   .button {
     margin: 0;
-    padding: 0.5em;
+    padding: 2em;
     border: none;
     background-color: transparent;
     cursor: pointer;
