@@ -49,7 +49,7 @@
   .pwa-toast {
     position: absolute;
     left: 50%;
-    bottom: 16px;
+    bottom: 32px;
     transform: translateX(-50%);
     margin: 0;
     padding: 12px;
@@ -69,5 +69,6 @@
     border-radius: 4px;
     padding: 5px 15px;
     background-color: antiquewhite;
+    cursor: pointer;
   }
 </style>
