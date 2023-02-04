@@ -4,6 +4,7 @@
   import debounce from 'lodash.debounce'
   import Menu from './Menu.svelte'
   import Sound from './Sound.svelte'
+  import Loader from './Loader.svelte'
   import { EDiceType } from '../types'
   import { getDicePosition, getRandomSign, getRoundedBox } from '../utils'
 
@@ -19,9 +20,10 @@
   let renderer: THREE.WebGLRenderer
   let canvas: HTMLCanvasElement
   let audio: HTMLAudioElement
+  let isLoading = true
   let isMuted = false
   let isRolling = false
-  let state = false
+  let diceOrder = false
   let isDamageActive = true
   let width = 0
   let height = 0
@@ -54,7 +56,7 @@
     window.removeEventListener('resize', handleWindowResizeDebounced)
   }
 
-  function initThree() {
+  async function initThree() {
     width = window.innerWidth;
     height = window.innerHeight;
     document.documentElement.style.setProperty('--vh', `${height * 0.01}px`)
@@ -63,17 +65,23 @@
 
     scene = new Scene()
 
-    dice[EDiceType.Attack] = getRoundedBox(EDiceType.Attack, BOX_SIZE)
-    scene.add(dice[EDiceType.Attack])
-    dice[EDiceType.Attack].position.set(...getDicePosition(EDiceType.Attack, BOX_SIZE))
+    const [attack, damage, protection] = await Promise.all([
+      await getRoundedBox(EDiceType.Attack, BOX_SIZE),
+      await getRoundedBox(EDiceType.Damage, BOX_SIZE),
+      await getRoundedBox(EDiceType.Protection, BOX_SIZE)
+    ])
 
-    dice[EDiceType.Damage] = getRoundedBox(EDiceType.Damage, BOX_SIZE)
-    scene.add(dice[EDiceType.Damage])
-    dice[EDiceType.Damage].position.set(...getDicePosition(EDiceType.Damage, BOX_SIZE))
+    dice[EDiceType.Attack] = attack
+    scene.add(attack)
+    attack.position.set(...getDicePosition(EDiceType.Attack, BOX_SIZE))
 
-    dice[EDiceType.Protection] = getRoundedBox(EDiceType.Protection, BOX_SIZE)
-    scene.add(dice[EDiceType.Protection])
-    dice[EDiceType.Protection].position.set(...getDicePosition(EDiceType.Protection, BOX_SIZE))
+    dice[EDiceType.Damage] = damage
+    scene.add(damage)
+    damage.position.set(...getDicePosition(EDiceType.Damage, BOX_SIZE))
+
+    dice[EDiceType.Protection] = protection
+    scene.add(protection)
+    protection.position.set(...getDicePosition(EDiceType.Protection, BOX_SIZE))
 
     renderer = new WebGLRenderer({ antialias: true, alpha: true, canvas })
     renderer.setPixelRatio(window.devicePixelRatio)
@@ -87,6 +95,8 @@
       }
     }
 
+    isLoading = false
+   
     show()
     
     canvas.addEventListener('click', handleClick)
@@ -148,7 +158,6 @@
       }
 
       if (!isMuted && curCount > count * 0.7) {
-        audio.autoplay = true
         audio.play()
       }
 
@@ -176,17 +185,17 @@
   function roll() {
     if (isRolling) return
 
-    if (state) {
+    if (diceOrder) {
       rollOne(dice[EDiceType.Attack])
       isDamageActive && rollOne(dice[EDiceType.Damage])
     } else {
       rollOne(dice[EDiceType.Protection])
     }
 
-    state = !state
+    diceOrder = !diceOrder
   }
 
-  function handleSpace(evt: Event) {
+  function handleSpace(evt: KeyboardEvent) {
     if ([' ', 'Space'].includes(evt.key)) {
       roll()
     }
@@ -199,8 +208,9 @@
 </script>
 
 <div class="wrap">
-  <audio bind:this={audio} src="/dice.mp3"/> 
-  <canvas bind:this={canvas} class='canvas'></canvas>
+  <audio bind:this={audio} src="/dice.mp3"/>
+  <canvas bind:this={canvas} class="canvas {isLoading && 'hidden'}"></canvas>
+  <Loader {isLoading} />    
   <Sound {isMuted} on:click={handleMute} />
   <Menu />
 </div>
@@ -215,5 +225,9 @@
     width: 100% !important;
     height: 100vh;
     height: calc(var(--vh, 1vh) * 100) !important;
+  }
+
+  .canvas.hidden {
+    opacity: 0;
   }
 </style>
