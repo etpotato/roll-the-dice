@@ -25,3 +25,7 @@ body {
     radial-gradient(rgba(0, 0, 0, 0.2), rgba(0, 0, 0, 0.4) 50%, rgba(0, 0, 0, 1)),
     url('/board-bg.jpg');
 }
+
+button, a {
+  -webkit-tap-highlight-color: transparent;
+}
